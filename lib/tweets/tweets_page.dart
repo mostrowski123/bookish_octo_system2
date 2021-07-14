@@ -1,5 +1,3 @@
-import 'package:bookish_octo_system/login/login_state.dart';
-import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
@@ -33,18 +31,21 @@ class _TweetsPageState extends State<TweetsPage> {
           title: Text('Tweets'),
         ),
         body: Center(
-            child: Obx(() =>
-              new StaggeredGridView.countBuilder(
-                crossAxisCount: 4,
-                itemCount: state.tweets.value.length,
-                itemBuilder: (BuildContext context, int index) => TweetCard(tweet: state.tweets.value[index]),
-                staggeredTileBuilder: (int index) =>
-                const StaggeredTile.fit(2),
-                mainAxisSpacing: 4.0,
-                crossAxisSpacing: 4.0,
-              ),
-            )
-        ));
+            child: Obx(
+          () => new StaggeredGridView.countBuilder(
+            crossAxisCount: (context.mediaQuerySize.width / 200).truncate(),
+            itemCount: state.tweets.value.length,
+            itemBuilder: (BuildContext context, int index) =>
+                TweetCard(tweet: state.tweets.value[index]),
+            staggeredTileBuilder: (int index) => const StaggeredTile.fit(1),
+            mainAxisSpacing: 4.0,
+            crossAxisSpacing: 4.0,
+          ),
+        )));
+  }
+
+  Widget buildItem(BuildContext c, int index) {
+    return TweetCard(tweet: state.tweets.value[index]);
   }
 
   @override

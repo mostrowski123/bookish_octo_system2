@@ -7,7 +7,7 @@ class TweetsRepository {
   TweetsRepository(this.api);
   Future<List<Tweet>> getPhotoTweets() async {
     final timeline = await api.timelineService.homeTimeline(
-      count: 10,
+      count: 50,
     );
 
     return await photoTweets(timeline);

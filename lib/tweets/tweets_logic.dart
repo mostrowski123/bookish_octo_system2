@@ -12,7 +12,9 @@ class TweetsLogic extends GetxController {
   Future<List<Tweet>> getPosts() async {
     if (api == null) return List.empty();
     var tweetRepo = new TweetsRepository(api!);
-    state.tweets.value = await tweetRepo.getPhotoTweets();
+    var tweets = await tweetRepo.getPhotoTweets(pastId: state.lastId);
+    state.lastId = tweets[tweets.length - 1].idStr ?? "";
+    state.tweets.addAll(tweets);
     return state.tweets;
   }
 }

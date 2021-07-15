@@ -1,14 +1,20 @@
-
 import 'package:dart_twitter_api/twitter_api.dart';
 
 class TweetsRepository {
   final TwitterApi api;
 
   TweetsRepository(this.api);
-  Future<List<Tweet>> getPhotoTweets() async {
-    final timeline = await api.timelineService.homeTimeline(
-      count: 50,
-    );
+
+  Future<List<Tweet>> getPhotoTweets({String pastId = ""}) async {
+    final List<Tweet> timeline;
+    if (pastId != "") {
+      timeline = await api.timelineService
+          .homeTimeline(count: 25, maxId: pastId);
+      timeline.removeAt(0);
+    } else {
+      timeline = await api.timelineService
+          .homeTimeline(count: 25);
+    }
 
     return await photoTweets(timeline);
   }

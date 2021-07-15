@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 class TweetsState {
 
   RxBool isLoading = true.obs;
+  String lastId = "";
   RxList<Tweet> tweets = <Tweet>[].obs;
 
   TweetsState();

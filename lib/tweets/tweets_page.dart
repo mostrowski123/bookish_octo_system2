@@ -1,3 +1,4 @@
+import 'package:dart_twitter_api/api/tweets/data/tweet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
@@ -34,9 +35,13 @@ class _TweetsPageState extends State<TweetsPage> {
             child: Obx(
           () => new StaggeredGridView.countBuilder(
             crossAxisCount: (context.mediaQuerySize.width / 200).truncate(),
-            itemCount: state.tweets.value.length,
-            itemBuilder: (BuildContext context, int index) =>
-                TweetCard(tweet: state.tweets.value[index]),
+            itemCount: state.tweets.length,
+            itemBuilder: (BuildContext context, int index) {
+              if (state.tweets.length - 2 == index) {
+                logic.getPosts();
+              }
+              return TweetCard(tweet: state.tweets.value[index]);
+            },
             staggeredTileBuilder: (int index) => const StaggeredTile.fit(1),
             mainAxisSpacing: 4.0,
             crossAxisSpacing: 4.0,
@@ -44,7 +49,7 @@ class _TweetsPageState extends State<TweetsPage> {
         )));
   }
 
-  Widget buildItem(BuildContext c, int index) {
+  Widget buildItem(BuildContext c, Tweet item, int index) {
     return TweetCard(tweet: state.tweets.value[index]);
   }
 

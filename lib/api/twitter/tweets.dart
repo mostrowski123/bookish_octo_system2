@@ -8,12 +8,24 @@ class TweetsRepository {
   Future<List<Tweet>> getPhotoTweets({String pastId = ""}) async {
     final List<Tweet> timeline;
     if (pastId != "") {
-      timeline = await api.timelineService
-          .homeTimeline(count: 25, maxId: pastId);
+      timeline =
+          await api.timelineService.homeTimeline(count: 25, maxId: pastId);
       timeline.removeAt(0);
     } else {
-      timeline = await api.timelineService
-          .homeTimeline(count: 25);
+      timeline = await api.timelineService.homeTimeline(count: 25);
+    }
+
+    return await photoTweets(timeline);
+  }
+
+  Future<List<Tweet>> getNewPhotoTweets({String sinceId = ""}) async {
+    final List<Tweet> timeline;
+
+    if (sinceId != "") {
+      timeline =
+          await api.timelineService.homeTimeline(count: 25, sinceId: sinceId);
+    } else {
+      timeline = await api.timelineService.homeTimeline(count: 25);
     }
 
     return await photoTweets(timeline);

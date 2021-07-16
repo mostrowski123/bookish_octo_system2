@@ -9,12 +9,31 @@ class TweetsLogic extends GetxController {
   final state = TweetsState();
   final TwitterApi? api = Get.find<LoginState>().api;
 
-  Future<List<Tweet>> getPosts() async {
+  Future<List<Tweet>> getPosts({bool refresh = false}) async {
+    state.isLoading.value = true;
+    await Future.delayed(Duration(milliseconds: 10000));
     if (api == null) return List.empty();
-    var tweetRepo = new TweetsRepository(api!);
-    var tweets = await tweetRepo.getPhotoTweets(pastId: state.lastId);
-    state.lastId = tweets[tweets.length - 1].idStr ?? "";
-    state.tweets.addAll(tweets);
+    try {
+      var tweetRepo = new TweetsRepository(api!);
+      List<Tweet> tweets;
+      if (refresh) {
+        final newTweets = await tweetRepo.getNewPhotoTweets(
+            sinceId: state.tweets.value[0].idStr ?? "");
+
+        newTweets.forEach((newTweet) {
+          state.tweets.insert(0, newTweet);
+        });
+      } else {
+        tweets = await tweetRepo.getPhotoTweets(pastId: state.lastId);
+        state.tweets.addAll(tweets);
+      }
+
+      state.lastId = state.tweets.value[state.tweets.length - 1].idStr ?? "";
+    } catch (err) {
+	    // TODO: catch error
+    } finally {
+      state.isLoading.value = false;
+    }
     return state.tweets;
   }
 }

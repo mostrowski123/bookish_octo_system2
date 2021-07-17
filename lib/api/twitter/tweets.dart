@@ -42,4 +42,9 @@ class TweetsRepository {
 
     return result;
   }
+
+  // like a tweet
+  Future<Tweet> likeTweet(String tweetId) async {
+    return await api.tweetService.createFavorite(id: tweetId);
+  }
 }

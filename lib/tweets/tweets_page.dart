@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:scroll_app_bar/scroll_app_bar.dart';
 
 import 'components/tweet_card.dart';
 import 'tweets_logic.dart';
@@ -18,6 +19,7 @@ class _TweetsPageState extends State<TweetsPage> {
   final TweetsState state = Get.find<TweetsLogic>().state;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+  final controller = ScrollController();
 
   @override
   initState() {
@@ -42,13 +44,12 @@ class _TweetsPageState extends State<TweetsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text('Tweets'),
+      appBar: ScrollAppBar(
+        controller: controller, // Note the controller here
+        title: Text("Tweets"),
+        
       ),
-      body: Center(
-          child: Obx(
+      body: Obx(
         () => SmartRefresher(
           enablePullDown: true,
           header: WaterDropHeader(),
@@ -56,6 +57,7 @@ class _TweetsPageState extends State<TweetsPage> {
           onRefresh: _onRefresh,
           onLoading: _onLoading,
           child: StaggeredGridView.countBuilder(
+            controller: controller,
             crossAxisCount: (context.mediaQuerySize.width / 200).truncate(),
             itemCount: state.tweets.length + 1,
             itemBuilder: (BuildContext context, int index) {
@@ -69,7 +71,8 @@ class _TweetsPageState extends State<TweetsPage> {
             },
             staggeredTileBuilder: (int index) {
               if (index == state.tweets.length) {
-                return StaggeredTile.extent((context.mediaQuerySize.width / 200).truncate(), 100);
+                return StaggeredTile.extent(
+                    (context.mediaQuerySize.width / 200).truncate(), 100);
               } else {
                 return const StaggeredTile.fit(1);
               }
@@ -78,7 +81,7 @@ class _TweetsPageState extends State<TweetsPage> {
             crossAxisSpacing: 4.0,
           ),
         ),
-      )),
+      ),
     );
   }
 

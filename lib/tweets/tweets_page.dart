@@ -47,7 +47,6 @@ class _TweetsPageState extends State<TweetsPage> {
       appBar: ScrollAppBar(
         controller: controller, // Note the controller here
         title: Text("Tweets"),
-        
       ),
       body: Obx(
         () => SmartRefresher(

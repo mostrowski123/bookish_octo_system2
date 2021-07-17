@@ -5,8 +5,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 
-import '../tweets_state.dart';
-
 class ActionButton extends StatefulWidget {
   const ActionButton({Key? key, required this.tweet}) : super(key: key);
 
@@ -41,7 +39,7 @@ class _ActionButtonState extends State<ActionButton> {
         Widget result;
         if (count == 0) {
           result = Text(
-            "love",
+            'like',
             style: TextStyle(color: color),
           );
         } else

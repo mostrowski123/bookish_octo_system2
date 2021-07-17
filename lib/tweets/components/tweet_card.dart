@@ -1,3 +1,4 @@
+import 'package:bookish_octo_system/tweet/tweet_view.dart';
 import 'package:bookish_octo_system/tweets/components/num_images.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dart_twitter_api/api/tweets/data/tweet.dart';
@@ -31,15 +32,29 @@ class TweetCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.0),
                   child: Stack(
                     children: [
-                      OctoImage(
-                        image: CachedNetworkImageProvider(
-                            tweet.entities?.media?[0].mediaUrl ?? ""),
-                        placeholderBuilder: (context) => Container(
-                            child: CircularProgressIndicator(),
-                            height: 200,
-                            width: 200),
-                        errorBuilder: OctoError.icon(color: Colors.red),
-                        fit: BoxFit.fitWidth,
+                      GestureDetector(
+                        child: Hero(
+                          tag: tweet.idStr ?? "",
+                          child: OctoImage(
+                            image: CachedNetworkImageProvider(
+                              tweet.entities?.media?[0].mediaUrl ?? "",),
+                            placeholderBuilder: (context) =>
+                                Container(
+                                    child: CircularProgressIndicator(),
+                                    height: 200,
+                                    width: 200),
+                            errorBuilder: OctoError.icon(color: Colors.red),
+                            fit: BoxFit.fitWidth,
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (_)
+                          {
+                            return TweetPage(
+                              tweet: tweet,
+                            );
+                          }));
+                        },
                       ),
                       if ((tweet.extendedEntities?.media?.length ?? 1) > 1)
                         NumImages(tweet: tweet)
@@ -54,13 +69,13 @@ class TweetCard extends StatelessWidget {
           SizedBox(height: 4),
           tweet.entities?.userMentions?.length != 0
               ? Text(
-                  '@${tweet.entities?.userMentions?[0].name ?? ""}',
-                  style: TextStyle(color: HexColor('#FFFFFFE6'), fontSize: 9.5),
-                )
+            '@${tweet.entities?.userMentions?[0].name ?? ""}',
+            style: TextStyle(color: HexColor('#FFFFFFE6'), fontSize: 9.5),
+          )
               : Text(
-                  '@${tweet.user?.name ?? ""}',
-                  style: TextStyle(color: HexColor('#FFFFFFE6'), fontSize: 9.5),
-                ),
+            '@${tweet.user?.name ?? ""}',
+            style: TextStyle(color: HexColor('#FFFFFFE6'), fontSize: 9.5),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -70,8 +85,7 @@ class TweetCard extends StatelessWidget {
                 minWidth: 3,
                 height: 2,
                 child: Icon(Icons.download, color: Colors.grey, size: 25),
-                onPressed: () async {
-                },
+                onPressed: () async {},
               ),
               ActionButton(tweet: tweet,),
             ],

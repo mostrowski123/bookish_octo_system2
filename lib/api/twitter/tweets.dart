@@ -9,10 +9,10 @@ class TweetsRepository {
     final List<Tweet> timeline;
     if (pastId != "") {
       timeline =
-          await api.timelineService.homeTimeline(count: 25, maxId: pastId);
+          await api.timelineService.homeTimeline(count: 45, maxId: pastId);
       timeline.removeAt(0);
     } else {
-      timeline = await api.timelineService.homeTimeline(count: 25);
+      timeline = await api.timelineService.homeTimeline(count: 45);
     }
 
     return await photoTweets(timeline);
@@ -23,9 +23,9 @@ class TweetsRepository {
 
     if (sinceId != "") {
       timeline =
-          await api.timelineService.homeTimeline(count: 25, sinceId: sinceId);
+          await api.timelineService.homeTimeline(count: 45, sinceId: sinceId);
     } else {
-      timeline = await api.timelineService.homeTimeline(count: 25);
+      timeline = await api.timelineService.homeTimeline(count: 45);
     }
 
     return await photoTweets(timeline);

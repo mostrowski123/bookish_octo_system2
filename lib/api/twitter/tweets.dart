@@ -44,7 +44,12 @@ class TweetsRepository {
   }
 
   // like a tweet
-  Future<Tweet> likeTweet(String tweetId) async {
-    return await api.tweetService.createFavorite(id: tweetId);
+  Future<bool> likeTweet(String tweetId) async {
+    try {
+      await api.tweetService.createFavorite(id: tweetId);
+    } catch (err) {
+      return false;
+    }
+    return true;
   }
 }

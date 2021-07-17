@@ -57,9 +57,10 @@ class TweetCard extends StatelessWidget {
                 minWidth: 3,
                 height: 2,
                 child: Icon(Icons.download, color: Colors.grey, size: 25),
-                onPressed: () => {print('hello')},
+                onPressed: () async {
+                },
               ),
-              ActionButton(),
+              ActionButton(tweet: tweet,),
             ],
           )
         ],

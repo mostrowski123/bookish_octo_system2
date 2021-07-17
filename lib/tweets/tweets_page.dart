@@ -66,7 +66,7 @@ class _TweetsPageState extends State<TweetsPage> {
               if (state.tweets.length == index) {
                 return Center(child: CircularProgressIndicator());
               }
-              return TweetCard(tweet: state.tweets.value[index]);
+              return TweetCard(tweet: state.tweets[index]);
             },
             staggeredTileBuilder: (int index) {
               if (index == state.tweets.length) {
@@ -85,7 +85,7 @@ class _TweetsPageState extends State<TweetsPage> {
   }
 
   Widget buildItem(BuildContext c, Tweet item, int index) {
-    return TweetCard(tweet: state.tweets.value[index]);
+    return TweetCard(tweet: state.tweets[index]);
   }
 
   @override

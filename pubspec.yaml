@@ -43,6 +43,7 @@ dependencies:
   intl: ^0.17.0
   pull_to_refresh: ^2.0.0
   scroll_app_bar: ^2.0.0
+  workmanager: ^0.4.1
 
 dev_dependencies:
   flutter_test:

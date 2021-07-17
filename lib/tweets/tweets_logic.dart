@@ -11,14 +11,13 @@ class TweetsLogic extends GetxController {
 
   Future<List<Tweet>> getPosts({bool refresh = false}) async {
     state.isLoading.value = true;
-    await Future.delayed(Duration(milliseconds: 10000));
     if (api == null) return List.empty();
     try {
       var tweetRepo = new TweetsRepository(api!);
       List<Tweet> tweets;
       if (refresh) {
         final newTweets = await tweetRepo.getNewPhotoTweets(
-            sinceId: state.tweets.value[0].idStr ?? "");
+            sinceId: state.tweets[0].idStr ?? "");
 
         newTweets.forEach((newTweet) {
           state.tweets.insert(0, newTweet);
@@ -28,12 +27,17 @@ class TweetsLogic extends GetxController {
         state.tweets.addAll(tweets);
       }
 
-      state.lastId = state.tweets.value[state.tweets.length - 1].idStr ?? "";
+      state.lastId = state.tweets[state.tweets.length - 1].idStr ?? "";
     } catch (err) {
-	    // TODO: catch error
+      // TODO: catch error
     } finally {
       state.isLoading.value = false;
     }
     return state.tweets;
+  }
+
+  Future<bool> likeTweet(String id) async {
+    var tweetRepo = new TweetsRepository(api!);
+    return await tweetRepo.likeTweet(id);
   }
 }

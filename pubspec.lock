@@ -92,13 +92,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.3"
-  extended_list:
-    dependency: transitive
-    description:
-      name: extended_list
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.0"
   extended_list_library:
     dependency: transitive
     description:
@@ -176,7 +169,7 @@ packages:
       name: get
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.4"
+    version: "4.2.4"
   hexcolor:
     dependency: "direct main"
     description:
@@ -226,20 +219,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.2"
-  loading_more_list:
-    dependency: "direct main"
-    description:
-      name: loading_more_list
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.0.0"
-  loading_more_list_library:
-    dependency: transitive
-    description:
-      name: loading_more_list_library
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.1"
   matcher:
     dependency: transitive
     description:
@@ -262,7 +241,7 @@ packages:
     source: hosted
     version: "2.0.0"
   octo_image:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: octo_image
       url: "https://pub.dartlang.org"
@@ -323,7 +302,7 @@ packages:
       name: photo_view
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.11.1"
+    version: "0.12.0"
   platform:
     dependency: transitive
     description:

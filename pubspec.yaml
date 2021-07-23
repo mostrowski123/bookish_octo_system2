@@ -32,19 +32,17 @@ dependencies:
   twitter_login: ^4.0.1
   flutter_secure_storage: ^4.2.0
   dart_twitter_api: ^0.5.3
-  get: ^4.1.4
+  get: ^4.2.4
   flutter_staggered_grid_view: ^0.4.0
-  octo_image: ^1.0.0+1
   cached_network_image: ^3.1.0
   hexcolor: ^2.0.4
   like_button: ^2.0.2
   waterfall_flow: ^3.0.1
-  loading_more_list: ^4.0.0
   intl: ^0.17.0
   pull_to_refresh: ^2.0.0
   scroll_app_bar: ^2.0.0
   workmanager: ^0.4.1
-  photo_view: ^0.11.1
+  photo_view: ^0.12.0
 
 dev_dependencies:
   flutter_test:

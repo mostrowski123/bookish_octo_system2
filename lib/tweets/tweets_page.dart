@@ -1,5 +1,9 @@
+import 'dart:isolate';
+import 'dart:ui';
+
 import 'package:dart_twitter_api/api/tweets/data/tweet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -20,11 +24,52 @@ class _TweetsPageState extends State<TweetsPage> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   final controller = ScrollController();
+  ReceivePort _port = ReceivePort();
+  List<_TaskInfo>? _tasks;
 
   @override
   initState() {
     super.initState();
+    _bindBackgroundIsolate();
+    FlutterDownloader.registerCallback(downloadCallback);
     logic.getPosts();
+  }
+
+  static void downloadCallback(
+      String id, DownloadTaskStatus status, int progress) {
+    //print(
+     //   'Background Isolate Callback: task ($id) is in status ($status) and process ($progress)');
+    final SendPort send =
+        IsolateNameServer.lookupPortByName('downloader_send_port')!;
+    send.send([id, status, progress]);
+  }
+
+  void _bindBackgroundIsolate() {
+    bool isSuccess = IsolateNameServer.registerPortWithName(
+        _port.sendPort, 'downloader_send_port');
+    if (!isSuccess) {
+      _unbindBackgroundIsolate();
+      _bindBackgroundIsolate();
+      return;
+    }
+    _port.listen((dynamic data) {
+      //print('UI Isolate Callback: $data');
+      String? id = data[0];
+      DownloadTaskStatus? status = data[1];
+      int? progress = data[2];
+
+      if (_tasks != null && _tasks!.isNotEmpty) {
+        final task = _tasks!.firstWhere((task) => task.taskId == id);
+        setState(() {
+          task.status = status;
+          task.progress = progress;
+        });
+      }
+    });
+  }
+
+  void _unbindBackgroundIsolate() {
+    IsolateNameServer.removePortNameMapping('downloader_send_port');
   }
 
   void _onRefresh() async {
@@ -66,7 +111,7 @@ class _TweetsPageState extends State<TweetsPage> {
               if (state.tweets.length == index) {
                 return Center(child: CircularProgressIndicator());
               }
-              return TweetCard(tweet: state.tweets[index]);
+              return TweetCard(tweet: state.tweets[index], platform: Theme.of(context).platform);
             },
             staggeredTileBuilder: (int index) {
               if (index == state.tweets.length) {
@@ -85,12 +130,24 @@ class _TweetsPageState extends State<TweetsPage> {
   }
 
   Widget buildItem(BuildContext c, Tweet item, int index) {
-    return TweetCard(tweet: state.tweets[index]);
+    return TweetCard(tweet: state.tweets[index], platform: Theme.of(context).platform);
   }
 
   @override
   void dispose() {
     Get.delete<TweetsLogic>();
+    _unbindBackgroundIsolate();
     super.dispose();
   }
+}
+
+class _TaskInfo {
+  final String? name;
+  final String? link;
+
+  String? taskId;
+  int? progress = 0;
+  DownloadTaskStatus? status = DownloadTaskStatus.undefined;
+
+  _TaskInfo({this.name, this.link});
 }

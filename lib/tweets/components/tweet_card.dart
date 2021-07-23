@@ -1,16 +1,40 @@
+import 'dart:io';
+
+import 'package:android_path_provider/android_path_provider.dart';
 import 'package:bookish_octo_system/tweet/tweet_view.dart';
 import 'package:bookish_octo_system/tweets/components/num_images.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dart_twitter_api/api/tweets/data/tweet.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'action_button.dart';
 
 class TweetCard extends StatelessWidget {
   final Tweet tweet;
+  final TargetPlatform? platform;
 
-  const TweetCard({Key? key, required this.tweet}) : super(key: key);
+  const TweetCard({Key? key, required this.tweet, required this.platform})
+      : super(key: key);
+
+  Future<bool> _checkPermission() async {
+    if (platform == TargetPlatform.android) {
+      final status = await Permission.storage.status;
+      if (status != PermissionStatus.granted) {
+        final result = await Permission.storage.request();
+        if (result == PermissionStatus.granted) {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    } else {
+      return true;
+    }
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +108,34 @@ class TweetCard extends StatelessWidget {
                 minWidth: 3,
                 height: 2,
                 child: Icon(Icons.download, color: Colors.grey, size: 25),
-                onPressed: () async {},
+                onPressed: () async {
+                  tweet.extendedEntities?.media?.forEach((url) async {
+                    var urlSplit = url.mediaUrlHttps?.split('.');
+                    var format = urlSplit?.last;
+                    if (await _checkPermission()) {
+                      return;
+                    }
+                    if (!await Directory(
+                            await AndroidPathProvider.picturesPath +
+                                '/BookishOctoSystem/')
+                        .exists()) {
+                      Directory(await AndroidPathProvider.picturesPath +
+                              '/BookishOctoSystem/')
+                          .create();
+                    }
+
+                    await FlutterDownloader.enqueue(
+                        url:
+                            '${url.mediaUrlHttps?.substring(0, (url.mediaUrlHttps?.length ?? 4) - 4)}?format=$format&name=orig',
+                        savedDir: await AndroidPathProvider.picturesPath +
+                            '/BookishOctoSystem/',
+                        showNotification: true,
+                        openFileFromNotification: true,
+                        fileName: url.mediaUrlHttps?.substring(
+                            'https://pbs.twimg.com/media/'.length,
+                            url.mediaUrlHttps?.length));
+                  });
+                },
               ),
               ActionButton(
                 tweet: tweet,

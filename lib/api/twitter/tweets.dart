@@ -52,4 +52,13 @@ class TweetsRepository {
     }
     return true;
   }
+
+  Future<bool> removeLike(String tweetId) async {
+    try {
+      await api.tweetService.destroyFavorite(id: tweetId);
+    } catch (err) {
+      return false;
+    }
+    return true;
+  }
 }

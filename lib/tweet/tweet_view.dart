@@ -41,26 +41,3 @@ class TweetPage extends StatelessWidget {
     );
   }
 }
-
-/*
-return GestureDetector(
-      child: Container(
-        child: Hero(
-          tag: tweet.idStr ?? "",
-          child: new CachedNetworkImage(
-            fit: BoxFit.contain,
-            imageUrl: tweet.entities?.media?[0].mediaUrl ?? "",
-            placeholder: (context, url) => SizedBox(
-              child: CircularProgressIndicator(),
-              height: 25.0,
-              width: 25.0,
-            ),
-            errorWidget: (context, url, error) => Icon(Icons.error),
-          ),
-        ),
-      ),
-      onTap: () {
-        Get.back();
-        },
-    );
- */

@@ -40,4 +40,9 @@ class TweetsLogic extends GetxController {
     var tweetRepo = new TweetsRepository(api!);
     return await tweetRepo.likeTweet(id);
   }
+
+  Future<bool> removeLike(String id) async {
+    var tweetRepo = new TweetsRepository(api!);
+    return await tweetRepo.removeLike(id);
+  }
 }

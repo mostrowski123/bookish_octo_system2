@@ -26,6 +26,15 @@ class _ActionButtonState extends State<ActionButton> {
       });
     }
   }
+
+  Future<void> removeLike() async {
+    final result = await logic.removeLike(tweet.retweetedStatus?.idStr ?? tweet.idStr ?? "");
+    if (!result) {
+      setState(() {
+        tweet.favorited = true;
+      });
+    }
+  }
   _ActionButtonState(this.tweet);
 
   @override
@@ -52,9 +61,15 @@ class _ActionButtonState extends State<ActionButton> {
       likeCountPadding: const EdgeInsets.only(right: 3.0, left: 3.0),
       likeCountAnimationType: LikeCountAnimationType.all,
       onTap: (liked) async {
-        tweet.favorited = true;
-        likeTweet();
-        return true;
+        if (liked) {
+          tweet.favorited = false;
+          removeLike();
+          return false;
+        } else {
+          tweet.favorited = true;
+          likeTweet();
+          return true;
+        }
       },
     );
   }

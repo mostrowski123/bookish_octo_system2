@@ -102,27 +102,29 @@ class _TweetsPageState extends State<TweetsPage> {
           onLoading: _onLoading,
           child: StaggeredGridView.countBuilder(
             controller: controller,
-            crossAxisCount: (context.mediaQuerySize.width / 200).truncate(),
+            crossAxisCount: (context.mediaQuerySize.width / 175).truncate(),
             itemCount: state.tweets.length + 1,
             itemBuilder: (BuildContext context, int index) {
-              if (state.tweets.length - 2 == index) {
-                logic.getPosts();
-              }
               if (state.tweets.length == index) {
                 return Center(child: CircularProgressIndicator());
+              }
+              if (state.tweets.length - 3 == index) {
+                logic.getPosts();
+              } else if (state.tweets.indexWhere((element) => element.idStr == state.lastId) - 2 == index) {
+                logic.getInBetweenPosts();
               }
               return TweetCard(tweet: state.tweets[index], platform: Theme.of(context).platform);
             },
             staggeredTileBuilder: (int index) {
               if (index == state.tweets.length) {
                 return StaggeredTile.extent(
-                    (context.mediaQuerySize.width / 200).truncate(), 100);
+                    (context.mediaQuerySize.width / 175).truncate(), 100);
               } else {
                 return const StaggeredTile.fit(1);
               }
             },
-            mainAxisSpacing: 4.0,
-            crossAxisSpacing: 4.0,
+            mainAxisSpacing: 3.0,
+            crossAxisSpacing: 3.0,
           ),
         ),
       ),

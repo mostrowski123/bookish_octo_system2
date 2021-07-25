@@ -22,6 +22,7 @@ class TweetsLogic extends GetxController {
         newTweets.forEach((newTweet) {
           state.tweets.insert(0, newTweet);
         });
+        state.lastId = newTweets.last.idStr ?? "";
       } else {
         tweets = await tweetRepo.getPhotoTweets(pastId: state.lastId);
         state.tweets.addAll(tweets);
@@ -29,8 +30,31 @@ class TweetsLogic extends GetxController {
 
       state.lastId = state.tweets[state.tweets.length - 1].idStr ?? "";
     } catch (err) {
-      // TODO: catch error
+      print(err);
     } finally {
+      state.isLoading.value = false;
+    }
+    return state.tweets;
+  }
+
+  Future<List<Tweet>> getInBetweenPosts() async {
+    state.isLoading.value = true;
+    if (api == null) return List.empty();
+
+    try {
+      var tweetRepo = new TweetsRepository(api!);
+      var newTweets = await tweetRepo.getPhotoTweets(pastId: state.lastId);
+      var indexOfLast =
+          state.tweets.indexWhere((element) => element.idStr == state.lastId);
+
+      for (var i = 0; i < newTweets.length; i++) {
+        if (state.tweets[i].idStr == state.lastId) {
+          state.lastId = state.tweets.last.idStr ?? "";
+          break;
+        }
+        state.tweets.insert(indexOfLast + 1, state.tweets[i]);
+      }
+    } catch (err) {} finally {
       state.isLoading.value = false;
     }
     return state.tweets;

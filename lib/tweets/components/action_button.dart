@@ -40,7 +40,7 @@ class _ActionButtonState extends State<ActionButton> {
   @override
   Widget build(BuildContext context) {
     return LikeButton(
-      size: 23,
+      size: 26,
       isLiked: tweet.favorited,
       likeCount: tweet.retweetedStatus?.favoriteCount ?? tweet.favoriteCount,
       countBuilder: (int? count, bool isLiked, String text) {

@@ -89,7 +89,7 @@ class TweetCard extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 4),
+          SizedBox(height: 2),
           tweet.entities?.userMentions?.length != 0
               ? Text(
                   '@${tweet.entities?.userMentions?[0].name ?? ""}',

@@ -1,4 +1,5 @@
 import 'package:dart_twitter_api/twitter_api.dart';
+import 'package:http/http.dart';
 
 class TweetsRepository {
   final TwitterApi api;
@@ -47,7 +48,10 @@ class TweetsRepository {
   Future<bool> likeTweet(String tweetId) async {
     try {
       await api.tweetService.createFavorite(id: tweetId);
-    } catch (err) {
+    } on Response catch (err) {
+      if (err.statusCode == 403) {
+        return true;
+      }
       return false;
     }
     return true;

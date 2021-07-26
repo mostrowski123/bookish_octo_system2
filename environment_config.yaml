@@ -1,0 +1,6 @@
+environment_config:
+  fields:
+    TWITTER_API_KEY:
+      env_var: TWITTER_API_KEY
+    TWITTER_API_SECRET_KEY:
+      env_var: TWITTER_API_SECRET_KEY

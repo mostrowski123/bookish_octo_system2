@@ -6,6 +6,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'login/login_page.dart';
 
 void main() async {
+  // test comment for commit
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize(
       debug: true // optional: set false to disable printing logs to console

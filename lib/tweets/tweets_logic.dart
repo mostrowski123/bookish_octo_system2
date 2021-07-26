@@ -29,9 +29,7 @@ class TweetsLogic extends GetxController {
       }
 
       state.lastId = state.tweets[state.tweets.length - 1].idStr ?? "";
-    } catch (err) {
-      print(err);
-    } finally {
+    } catch (err) {} finally {
       state.isLoading.value = false;
     }
     return state.tweets;

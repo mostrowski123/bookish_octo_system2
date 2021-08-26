@@ -5,8 +5,20 @@ import 'package:hexcolor/hexcolor.dart';
 
 import 'login/login_page.dart';
 
+class CustomImageCache extends WidgetsFlutterBinding {
+  @override
+  ImageCache createImageCache() {
+    ImageCache imageCache = super.createImageCache();
+    // Set your image cache size
+    imageCache.maximumSizeBytes = 1024 * 1024 * 400; // 400 MB
+    return imageCache;
+  }
+}
+
+
 void main() async {
   // test comment2
+  CustomImageCache();
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize(
       debug: true // optional: set false to disable printing logs to console

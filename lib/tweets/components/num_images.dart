@@ -23,15 +23,17 @@ class NumImages extends StatelessWidget {
               color: Colors.black,
               blurRadius: 2.0,
               spreadRadius: 0.0,
-              offset: Offset(
-                  0, 0), // shadow direction: bottom right
+              offset: Offset(0, 0), // shadow direction: bottom right
             )
           ],
-          borderRadius:
-          new BorderRadius.all(Radius.circular(40)),
+          borderRadius: new BorderRadius.all(Radius.circular(40)),
         ),
-        child: Text((tweet.extendedEntities?.media?.length ?? "").toString(), style: TextStyle(color: Colors.black87),
-            textAlign: TextAlign.center),
+        child: Container(
+          padding: EdgeInsets.fromLTRB(0, 1, 0, 0),
+          child: Text((tweet.extendedEntities?.media?.length ?? "").toString(),
+              style: TextStyle(color: Colors.black87),
+              textAlign: TextAlign.center),
+        ),
       ),
     );
   }

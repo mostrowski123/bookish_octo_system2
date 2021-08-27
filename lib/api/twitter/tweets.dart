@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:http/http.dart';
 
@@ -7,26 +9,50 @@ class TweetsRepository {
   TweetsRepository(this.api);
 
   Future<List<Tweet>> getPhotoTweets({String pastId = ""}) async {
-    final List<Tweet> timeline;
-    if (pastId != "") {
-      timeline =
-          await api.timelineService.homeTimeline(count: 45, maxId: pastId);
-      timeline.removeAt(0);
-    } else {
-      timeline = await api.timelineService.homeTimeline(count: 45);
-    }
+    late List<Tweet> timeline;
 
+    try {
+      if (pastId != "") {
+        timeline =
+            await api.timelineService.homeTimeline(count: 45, maxId: pastId);
+        timeline.removeAt(0);
+      } else {
+        timeline = await api.timelineService.homeTimeline(count: 45);
+      }
+    } on Response catch (err) {
+      if (err.statusCode == 429) {
+        var result = await api.client.get(Uri.https(
+            'api.twitter.com', '1.1/application/rate_limit_status.json'));
+
+        var resetTime = jsonDecode(result.body)["resources"]["statuses"]
+            ["/statuses/home_timeline"]["reset"];
+        throw new RateLimitExceededException(
+            DateTime.fromMillisecondsSinceEpoch(resetTime * 1000));
+      }
+    }
     return await photoTweets(timeline);
   }
 
   Future<List<Tweet>> getNewPhotoTweets({String sinceId = ""}) async {
-    final List<Tweet> timeline;
+    late List<Tweet> timeline;
 
-    if (sinceId != "") {
-      timeline =
-          await api.timelineService.homeTimeline(count: 45, sinceId: sinceId);
-    } else {
-      timeline = await api.timelineService.homeTimeline(count: 45);
+    try {
+      if (sinceId != "") {
+        timeline =
+            await api.timelineService.homeTimeline(count: 45, sinceId: sinceId);
+      } else {
+        timeline = await api.timelineService.homeTimeline(count: 45);
+      }
+    } on Response catch (err) {
+      if (err.statusCode == 429) {
+        var result = await api.client.get(Uri.https(
+            'api.twitter.com', '1.1/application/rate_limit_status.json'));
+
+        var resetTime = jsonDecode(result.body)["resources"]["statuses"]
+            ["/statuses/home_timeline"]["reset"];
+        throw new RateLimitExceededException(
+            DateTime.fromMicrosecondsSinceEpoch(resetTime));
+      }
     }
 
     return await photoTweets(timeline);
@@ -65,4 +91,10 @@ class TweetsRepository {
     }
     return true;
   }
+}
+
+class RateLimitExceededException implements Exception {
+  DateTime rateLimitLift;
+
+  RateLimitExceededException(this.rateLimitLift);
 }

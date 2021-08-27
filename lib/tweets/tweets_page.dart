@@ -8,6 +8,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_app_bar/scroll_app_bar.dart';
+import 'package:humanizer/humanizer.dart';
 
 import 'components/tweet_card.dart';
 import 'tweets_logic.dart';
@@ -38,7 +39,7 @@ class _TweetsPageState extends State<TweetsPage> {
   static void downloadCallback(
       String id, DownloadTaskStatus status, int progress) {
     //print(
-     //   'Background Isolate Callback: task ($id) is in status ($status) and process ($progress)');
+    //   'Background Isolate Callback: task ($id) is in status ($status) and process ($progress)');
     final SendPort send =
         IsolateNameServer.lookupPortByName('downloader_send_port')!;
     send.send([id, status, progress]);
@@ -106,14 +107,25 @@ class _TweetsPageState extends State<TweetsPage> {
             itemCount: state.tweets.length + 1,
             itemBuilder: (BuildContext context, int index) {
               if (state.tweets.length == index) {
+                if (state.rateLimitLift.millisecondsSinceEpoch >
+                    DateTime.now().millisecondsSinceEpoch) {
+                  return Center(
+                      child: Text(
+                          "Reached rate limit. Please try again in ${state.rateLimitLift.humanizeRelativeDateTime()}"));
+                }
                 return Center(child: CircularProgressIndicator());
               }
               if (state.tweets.length - 3 == index) {
                 logic.getPosts();
-              } else if (state.tweets.indexWhere((element) => element.idStr == state.lastId) - 2 == index) {
+              } else if (state.tweets.indexWhere(
+                          (element) => element.idStr == state.lastId) -
+                      2 ==
+                  index) {
                 logic.getInBetweenPosts();
               }
-              return TweetCard(tweet: state.tweets[index], platform: Theme.of(context).platform);
+              return TweetCard(
+                  tweet: state.tweets[index],
+                  platform: Theme.of(context).platform);
             },
             staggeredTileBuilder: (int index) {
               if (index == state.tweets.length) {
@@ -132,7 +144,8 @@ class _TweetsPageState extends State<TweetsPage> {
   }
 
   Widget buildItem(BuildContext c, Tweet item, int index) {
-    return TweetCard(tweet: state.tweets[index], platform: Theme.of(context).platform);
+    return TweetCard(
+        tweet: state.tweets[index], platform: Theme.of(context).platform);
   }
 
   @override

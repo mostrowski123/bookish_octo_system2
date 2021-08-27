@@ -11,6 +11,12 @@ class TweetsLogic extends GetxController {
 
   Future<List<Tweet>> getPosts({bool refresh = false}) async {
     state.isLoading.value = true;
+    if (state.rateLimitLift.millisecondsSinceEpoch >
+        DateTime.now().millisecondsSinceEpoch) {
+      return state.tweets;
+    } else {
+      state.rateLimit.value = false;
+    }
     if (api == null) return List.empty();
     try {
       var tweetRepo = new TweetsRepository(api!);
@@ -29,6 +35,9 @@ class TweetsLogic extends GetxController {
       }
 
       state.lastId = state.tweets[state.tweets.length - 1].idStr ?? "";
+    } on RateLimitExceededException catch (err) {
+      state.rateLimit.value = true;
+      state.rateLimitLift = err.rateLimitLift;
     } catch (err) {} finally {
       state.isLoading.value = false;
     }
@@ -38,6 +47,13 @@ class TweetsLogic extends GetxController {
   Future<List<Tweet>> getInBetweenPosts() async {
     state.isLoading.value = true;
     if (api == null) return List.empty();
+
+    if (state.rateLimitLift.millisecondsSinceEpoch >
+        DateTime.now().millisecondsSinceEpoch) {
+      return state.tweets;
+    } else {
+      state.rateLimit.value = false;
+    }
 
     try {
       var tweetRepo = new TweetsRepository(api!);

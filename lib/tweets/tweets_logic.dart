@@ -41,6 +41,7 @@ class TweetsLogic extends GetxController {
     } catch (err) {} finally {
       state.isLoading.value = false;
     }
+    state.tweets.refresh();
     return state.tweets;
   }
 
@@ -71,6 +72,7 @@ class TweetsLogic extends GetxController {
     } catch (err) {} finally {
       state.isLoading.value = false;
     }
+    state.tweets.refresh();
     return state.tweets;
   }
 

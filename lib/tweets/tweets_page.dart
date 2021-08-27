@@ -106,14 +106,13 @@ class _TweetsPageState extends State<TweetsPage> {
             crossAxisCount: (context.mediaQuerySize.width / 175).truncate(),
             itemCount: state.tweets.length + 1,
             itemBuilder: (BuildContext context, int index) {
-              if (state.tweets.length == index) {
-                if (state.rateLimitLift.millisecondsSinceEpoch >
-                    DateTime.now().millisecondsSinceEpoch) {
-                  return Center(
-                      child: Text(
-                          "Reached rate limit. Please try again in ${state.rateLimitLift.humanizeRelativeDateTime()}"));
-                }
+              if (state.isLoading.value) {
                 return Center(child: CircularProgressIndicator());
+              }
+              if (state.rateLimit.value) {
+                return Center(
+                    child: Text(
+                        "Reached rate limit. Please try again in ${state.rateLimitLift.humanizeRelativeDateTime()}"));
               }
               if (state.tweets.length - 3 == index) {
                 logic.getPosts();
@@ -123,9 +122,15 @@ class _TweetsPageState extends State<TweetsPage> {
                   index) {
                 logic.getInBetweenPosts();
               }
-              return TweetCard(
-                  tweet: state.tweets[index],
-                  platform: Theme.of(context).platform);
+              if (state.tweets.length > 0) {
+                return TweetCard(
+                    tweet: state.tweets[index],
+                    platform: Theme
+                        .of(context)
+                        .platform);
+              }
+
+              return Center();
             },
             staggeredTileBuilder: (int index) {
               if (index == state.tweets.length) {

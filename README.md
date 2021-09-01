@@ -1,7 +1,7 @@
 [![Build Status](https://app.bitrise.io/app/fbfde42680bab180/status.svg?token=9PhTjAWkvcWc7v0t2YfT6A&branch=master)](https://app.bitrise.io/app/fbfde42680bab180)
 # Bookish Octo System 2
 
-A very early WIP mobile application for viewing images on twitter. Project name is WIP.
+A very early WIP mobile application for viewing images on Twitter. Project name is WIP.
 
 ## Building
 

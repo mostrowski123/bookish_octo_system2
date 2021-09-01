@@ -1,16 +1,22 @@
-# bookish_octo_system
+[![Build Status](https://app.bitrise.io/app/fbfde42680bab180/status.svg?token=9PhTjAWkvcWc7v0t2YfT6A&branch=master)](https://app.bitrise.io/app/fbfde42680bab180)
+# Bookish Octo System 2
 
-A new Flutter project.
+A very early in progress mobile application for viewing images on twitter. Project name is WIP.
 
-## Getting Started
+## Building
 
-This project is a starting point for a Flutter application.
+You must have your own api keys in a file called
+`environment_config.dart` in the `lib` folder. It should look like
 
-A few resources to get you started if this is your first Flutter project:
+```dart
+class EnvironmentConfig {
+  static const String TWITTER_API_KEY = 'Your twitter api key';
+  static const String TWITTER_API_SECRET_KEY = 'Your twitter api secret key';
+}
+```
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+This project uses environment config package so if you have `API_KEY`
+and `API_SECRET_KEY` set as environment variables set on your system,
+you can run `flutter pub run environment_config:generate` to generate
+the above file.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.

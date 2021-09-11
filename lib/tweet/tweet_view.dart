@@ -22,7 +22,7 @@ class TweetPage extends StatelessWidget {
             return PhotoViewGalleryPageOptions(
                 imageProvider: CachedNetworkImageProvider(
                   tweet.extendedEntities?.media?[index].mediaUrl ?? "",),
-                heroAttributes: PhotoViewHeroAttributes(tag: tweet.idStr ?? "")
+                heroAttributes: PhotoViewHeroAttributes(tag: '${tweet.idStr}$index')
             );
           },
           itemCount: tweet.extendedEntities?.media?.length,

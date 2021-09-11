@@ -57,7 +57,7 @@ class TweetCard extends StatelessWidget {
                     children: [
                       GestureDetector(
                         child: Hero(
-                          tag: tweet.post.idStr ?? "",
+                          tag: '${tweet.post.idStr}0',
                           child: CachedNetworkImage(
                             imageUrl: tweet.post.entities?.media?[0].mediaUrl ?? "",
                             progressIndicatorBuilder:

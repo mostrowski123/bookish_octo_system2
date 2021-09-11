@@ -4,11 +4,12 @@ import 'dart:ui';
 import 'package:dart_twitter_api/api/tweets/data/tweet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_app_bar/scroll_app_bar.dart';
 import 'package:humanizer/humanizer.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 import 'components/tweet_card.dart';
 import 'tweets_logic.dart';
@@ -33,7 +34,7 @@ class _TweetsPageState extends State<TweetsPage> {
     super.initState();
     _bindBackgroundIsolate();
     FlutterDownloader.registerCallback(downloadCallback);
-    //logic.getPosts();
+    logic.getPosts();
   }
 
   static void downloadCallback(
@@ -94,57 +95,54 @@ class _TweetsPageState extends State<TweetsPage> {
         controller: controller, // Note the controller here
         title: Text("Tweets"),
       ),
-      body: Obx(
-        () => SmartRefresher(
-          enablePullDown: true,
-          header: WaterDropHeader(),
-          controller: _refreshController,
-          onRefresh: _onRefresh,
-          onLoading: _onLoading,
-          child: StaggeredGridView.countBuilder(
-            controller: controller,
-            crossAxisCount: (context.mediaQuerySize.width / 175).truncate(),
-            itemCount: state.tweets.length + 1,
-            itemBuilder: (BuildContext context, int index) {
-              if (state.isLoading.value) {
-                return Center(child: CircularProgressIndicator());
-              }
-              if (state.rateLimit.value) {
-                return Center(
-                    child: Text(
-                        "Reached rate limit. Please try again in ${state.rateLimitLift.humanizeRelativeDateTime()}"));
-              }
-              if (state.tweets.length - 3 == index) {
-                logic.getPosts();
-              } else if (state.tweets.indexWhere(
-                          (element) => element.post.idStr == state.lastId) -
-                      2 ==
-                  index) {
-                logic.getInBetweenPosts();
-              }
-              if (state.tweets.length > 0) {
-                return TweetCard(
-                    tweet: state.tweets[index],
-                    platform: Theme
-                        .of(context)
-                        .platform);
-              }
-
-              return Center();
-            },
-            staggeredTileBuilder: (int index) {
-              if (index == state.tweets.length) {
-                return StaggeredTile.extent(
-                    (context.mediaQuerySize.width / 175).truncate(), 100);
-              } else {
-                return const StaggeredTile.fit(1);
-              }
-            },
-            mainAxisSpacing: 3.0,
-            crossAxisSpacing: 3.0,
-          ),
-        ),
-      ),
+      body: Obx(() {
+        return SmartRefresher(
+            enablePullDown: true,
+            header: WaterDropHeader(),
+            controller: _refreshController,
+            onRefresh: _onRefresh,
+            onLoading: _onLoading,
+            child: WaterfallFlow.builder(
+                itemCount: state.tweets.length + 1,
+                gridDelegate:
+                    SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                  crossAxisCount:
+                      (context.mediaQuerySize.width / 175).truncate(),
+                  crossAxisSpacing: 3.0,
+                  mainAxisSpacing: 3.0,
+                ),
+                itemBuilder: (context, index) {
+                  if (state.tweets.length - 3 == index) {
+                    logic.getPosts();
+                  } else if (state.tweets.indexWhere(
+                              (element) => element.post.idStr == state.lastId) -
+                          2 ==
+                      index) {
+                    logic.getInBetweenPosts();
+                  }
+                  if (state.rateLimit.isTrue) {
+                    Fluttertoast.showToast(
+                        msg: "Reached rate limit. Please refresh in ${state.rateLimitLift.humanizeRelativeDateTime()}",
+                        toastLength: Toast.LENGTH_LONG,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                    );
+                  }
+                  if (state.tweets.length > 0 && index < state.tweets.length) {
+                    return TweetCard(
+                        tweet: state.tweets[index],
+                        platform: Theme.of(context).platform);
+                  } else {
+                    return Container(
+                        width: 200,
+                        height: 200,
+                        child: CircularProgressIndicator());
+                  }
+                }));
+      }),
     );
   }
 

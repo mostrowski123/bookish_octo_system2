@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:http/http.dart';
 
+import 'models/tweet_extended.dart';
+
 class TweetsRepository {
   final TwitterApi api;
 
   TweetsRepository(this.api);
 
-  Future<List<Tweet>> getPhotoTweets({String pastId = ""}) async {
+  Future<List<ImagePost>> getPhotoTweets({String pastId = ""}) async {
     late List<Tweet> timeline;
 
     try {
@@ -33,7 +35,7 @@ class TweetsRepository {
     return await photoTweets(timeline);
   }
 
-  Future<List<Tweet>> getNewPhotoTweets({String sinceId = ""}) async {
+  Future<List<ImagePost>> getNewPhotoTweets({String sinceId = ""}) async {
     late List<Tweet> timeline;
 
     try {
@@ -58,12 +60,12 @@ class TweetsRepository {
     return await photoTweets(timeline);
   }
 
-  Future<List<Tweet>> photoTweets(List<Tweet> tweets) async {
-    var result = <Tweet>[];
+  Future<List<ImagePost>> photoTweets(List<Tweet> tweets) async {
+    var result = <ImagePost>[];
 
     tweets.forEach((tweet) {
       if (tweet.entities?.media?.isNotEmpty ?? false) {
-        result.add(tweet);
+        result.add(new ImagePost(tweet));
       }
     });
 

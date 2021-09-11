@@ -33,7 +33,7 @@ class _TweetsPageState extends State<TweetsPage> {
     super.initState();
     _bindBackgroundIsolate();
     FlutterDownloader.registerCallback(downloadCallback);
-    logic.getPosts();
+    //logic.getPosts();
   }
 
   static void downloadCallback(
@@ -117,7 +117,7 @@ class _TweetsPageState extends State<TweetsPage> {
               if (state.tweets.length - 3 == index) {
                 logic.getPosts();
               } else if (state.tweets.indexWhere(
-                          (element) => element.idStr == state.lastId) -
+                          (element) => element.post.idStr == state.lastId) -
                       2 ==
                   index) {
                 logic.getInBetweenPosts();

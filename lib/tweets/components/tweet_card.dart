@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:android_path_provider/android_path_provider.dart';
+import 'package:bookish_octo_system/api/twitter/models/tweet_extended.dart';
 import 'package:bookish_octo_system/tweet/tweet_view.dart';
 import 'package:bookish_octo_system/tweets/components/num_images.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dart_twitter_api/api/tweets/data/tweet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -13,7 +13,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'action_button.dart';
 
 class TweetCard extends StatelessWidget {
-  final Tweet tweet;
+  final ImagePost tweet;
   final TargetPlatform? platform;
 
   const TweetCard({Key? key, required this.tweet, required this.platform})
@@ -57,9 +57,9 @@ class TweetCard extends StatelessWidget {
                     children: [
                       GestureDetector(
                         child: Hero(
-                          tag: tweet.idStr ?? "",
+                          tag: tweet.post.idStr ?? "",
                           child: CachedNetworkImage(
-                            imageUrl: tweet.entities?.media?[0].mediaUrl ?? "",
+                            imageUrl: tweet.post.entities?.media?[0].mediaUrl ?? "",
                             progressIndicatorBuilder:
                                 (context, url, downloadProgress) => Container(
                                     child: CircularProgressIndicator(
@@ -74,13 +74,13 @@ class TweetCard extends StatelessWidget {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (_) {
                             return TweetPage(
-                              tweet: tweet,
+                              tweet: tweet.post,
                             );
                           }));
                         },
                       ),
-                      if ((tweet.extendedEntities?.media?.length ?? 1) > 1)
-                        NumImages(tweet: tweet)
+                      if ((tweet.post.extendedEntities?.media?.length ?? 1) > 1)
+                        NumImages(tweet: tweet.post)
                       else
                         Container()
                     ],
@@ -90,13 +90,13 @@ class TweetCard extends StatelessWidget {
             ),
           ),
           SizedBox(height: 2),
-          tweet.entities?.userMentions?.length != 0
+          tweet.post.entities?.userMentions?.length != 0
               ? Text(
-                  '@${tweet.entities?.userMentions?[0].name ?? ""}',
+                  '@${tweet.post.entities?.userMentions?[0].name ?? ""}',
                   style: TextStyle(color: HexColor('#FFFFFFE6'), fontSize: 9.5),
                 )
               : Text(
-                  '@${tweet.user?.name ?? ""}',
+                  '@${tweet.post.user?.name ?? ""}',
                   style: TextStyle(color: HexColor('#FFFFFFE6'), fontSize: 9.5),
                 ),
           Row(
@@ -109,7 +109,7 @@ class TweetCard extends StatelessWidget {
                 height: 2,
                 child: Icon(Icons.download, color: Colors.grey, size: 25),
                 onPressed: () async {
-                  tweet.extendedEntities?.media?.forEach((url) async {
+                  tweet.post.extendedEntities?.media?.forEach((url) async {
                     var urlSplit = url.mediaUrlHttps?.split('.');
                     var format = urlSplit?.last;
                     if (await _checkPermission()) {
@@ -138,7 +138,7 @@ class TweetCard extends StatelessWidget {
                 },
               ),
               ActionButton(
-                tweet: tweet,
+                tweet: tweet.post,
               ),
             ],
           )

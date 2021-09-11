@@ -1,4 +1,4 @@
-import 'package:dart_twitter_api/twitter_api.dart';
+import 'package:bookish_octo_system/api/twitter/models/tweet_extended.dart';
 import 'package:get/get.dart';
 
 class TweetsState {
@@ -7,7 +7,7 @@ class TweetsState {
   RxBool rateLimit = false.obs;
   DateTime rateLimitLift = DateTime.now().subtract(new Duration(seconds: 1));
   String lastId = "";
-  RxList<Tweet> tweets = <Tweet>[].obs;
+  RxList<ImagePost> tweets = <ImagePost>[].obs;
 
   TweetsState();
 }

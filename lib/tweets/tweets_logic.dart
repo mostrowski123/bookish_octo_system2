@@ -1,3 +1,4 @@
+import 'package:bookish_octo_system/api/twitter/models/tweet_extended.dart';
 import 'package:bookish_octo_system/api/twitter/tweets.dart';
 import 'package:bookish_octo_system/login/login_state.dart';
 import 'package:dart_twitter_api/twitter_api.dart';
@@ -9,7 +10,7 @@ class TweetsLogic extends GetxController {
   final state = TweetsState();
   final TwitterApi? api = Get.find<LoginState>().api;
 
-  Future<List<Tweet>> getPosts({bool refresh = false}) async {
+  Future<List<ImagePost>> getPosts({bool refresh = false}) async {
     state.isLoading.value = true;
     if (state.rateLimitLift.millisecondsSinceEpoch >
         DateTime.now().millisecondsSinceEpoch) {
@@ -20,21 +21,21 @@ class TweetsLogic extends GetxController {
     if (api == null) return List.empty();
     try {
       var tweetRepo = new TweetsRepository(api!);
-      List<Tweet> tweets;
+      List<ImagePost> tweets;
       if (refresh) {
         final newTweets = await tweetRepo.getNewPhotoTweets(
-            sinceId: state.tweets[0].idStr ?? "");
+            sinceId: state.tweets[0].post.idStr ?? "");
 
         newTweets.forEach((newTweet) {
           state.tweets.insert(0, newTweet);
         });
-        state.lastId = newTweets.last.idStr ?? "";
+        state.lastId = newTweets.last.post.idStr ?? "";
       } else {
         tweets = await tweetRepo.getPhotoTweets(pastId: state.lastId);
         state.tweets.addAll(tweets);
       }
 
-      state.lastId = state.tweets[state.tweets.length - 1].idStr ?? "";
+      state.lastId = state.tweets[state.tweets.length - 1].post.idStr ?? "";
     } on RateLimitExceededException catch (err) {
       state.rateLimit.value = true;
       state.rateLimitLift = err.rateLimitLift;
@@ -45,7 +46,7 @@ class TweetsLogic extends GetxController {
     return state.tweets;
   }
 
-  Future<List<Tweet>> getInBetweenPosts() async {
+  Future<List<ImagePost>> getInBetweenPosts() async {
     state.isLoading.value = true;
     if (api == null) return List.empty();
 
@@ -60,11 +61,11 @@ class TweetsLogic extends GetxController {
       var tweetRepo = new TweetsRepository(api!);
       var newTweets = await tweetRepo.getPhotoTweets(pastId: state.lastId);
       var indexOfLast =
-          state.tweets.indexWhere((element) => element.idStr == state.lastId);
+          state.tweets.indexWhere((element) => element.post.idStr == state.lastId);
 
       for (var i = 0; i < newTweets.length; i++) {
-        if (state.tweets[i].idStr == state.lastId) {
-          state.lastId = state.tweets.last.idStr ?? "";
+        if (state.tweets[i].post.idStr == state.lastId) {
+          state.lastId = state.tweets.last.post.idStr ?? "";
           break;
         }
         state.tweets.insert(indexOfLast + 1, state.tweets[i]);

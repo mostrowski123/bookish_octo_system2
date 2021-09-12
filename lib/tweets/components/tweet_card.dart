@@ -59,13 +59,26 @@ class TweetCard extends StatelessWidget {
                         child: Hero(
                           tag: '${tweet.post.idStr}0',
                           child: CachedNetworkImage(
-                            imageUrl: tweet.post.entities?.media?[0].mediaUrl ?? "",
+                            imageUrl: tweet.getSmallImageUrl(),
                             progressIndicatorBuilder:
                                 (context, url, downloadProgress) => Container(
-                                    child: CircularProgressIndicator(
-                                        value: downloadProgress.progress),
-                                    height: 200,
-                                    width: 200),
+                                    child: SizedBox(
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                            value: downloadProgress.progress),
+                                      ),
+                                    ),
+                                    // calculate new height. w * h * 175 + arbitrary = new scale height
+                                    height: (tweet.post.entities?.media?[0]
+                                                    .sizes?.small?.h
+                                                    ?.toDouble() ??
+                                                200) /
+                                            (tweet.post.entities?.media?[0]
+                                                    .sizes?.small?.w ??
+                                                200) *
+                                            175 +
+                                        20,
+                                    width: 175),
                             errorWidget: (context, url, error) =>
                                 Icon(Icons.error),
                           ),

@@ -62,9 +62,18 @@ class TweetsRepository {
   Future<List<ImagePost>> photoTweets(List<Tweet> tweets) async {
     var result = <ImagePost>[];
 
-    tweets.forEach((tweet) {
+    tweets.forEach((tweet) async {
       if (tweet.entities?.media?.isNotEmpty ?? false) {
-        result.add(new ImagePost(tweet));
+        var imagePost = new ImagePost(tweet);
+        result.add(imagePost);
+        if (tweet.retweetedStatus != null) {
+          try {
+            imagePost.post.favorited = (await api.tweetService.show(id: tweet.retweetedStatus?.idStr ?? "")).favorited;
+          } on Response catch (err) {
+            print(err.toString());
+          }
+        }
+
       }
     });
 

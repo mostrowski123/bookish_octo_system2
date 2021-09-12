@@ -116,8 +116,14 @@ class _TweetsPageState extends State<TweetsPage> {
                     logic.getPosts();
                   } else if (state.tweets.indexWhere(
                               (element) => element.post.idStr == state.lastId) -
-                          2 ==
-                      index) {
+                          1 ==
+                      index && state.isLoading.isFalse) {
+                    /*
+                     if we encounter last tweet received before end of tweet
+                     list, we must be inserting in between posts.
+                     also make sure we are not encountering this just because we
+                     are initially loading
+                     */
                     logic.getInBetweenPosts();
                   }
                   if (state.rateLimit.isTrue) {

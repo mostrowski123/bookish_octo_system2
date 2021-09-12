@@ -35,7 +35,7 @@ class TweetsLogic extends GetxController {
         state.tweets.addAll(tweets);
       }
 
-      state.lastId = state.tweets[state.tweets.length - 1].post.idStr ?? "";
+      state.lastId = state.tweets.last.post.idStr ?? "";
     } on RateLimitExceededException catch (err) {
       state.rateLimit.value = true;
       state.rateLimitLift = err.rateLimitLift;

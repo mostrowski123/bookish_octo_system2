@@ -3,6 +3,7 @@ import 'package:bookish_octo_system/constants/TWITTER_API.dart';
 import 'package:dart_twitter_api/api/twitter_client.dart';
 import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/src/response.dart';
 import 'package:twitter_login/entity/auth_result.dart';
 import 'package:twitter_login/twitter_login.dart';
@@ -90,7 +91,13 @@ class TwitterApiHelper {
       case TwitterLoginStatus.error:
       case null:
       // error
-        print('====== Login error ======');
+      Fluttertoast.showToast(
+          msg: "Error Logging in - ${authResult.errorMessage}",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          fontSize: 16.0
+      );
         break;
     }
   }

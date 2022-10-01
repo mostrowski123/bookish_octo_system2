@@ -145,8 +145,7 @@ class TweetCard extends StatelessWidget {
                         showNotification: true,
                         openFileFromNotification: true,
                         fileName: url.mediaUrlHttps?.substring(
-                            'https://pbs.twimg.com/media/'.length,
-                            url.mediaUrlHttps?.length));
+                            'https://pbs.twimg.com/media/'.length));
                   });
                 },
               ),

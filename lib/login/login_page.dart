@@ -12,6 +12,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    logic.login();
     ever(state.isLoggedIn, (_) async {
       Get.put(state);
       Get.off(() => TweetsPage());
